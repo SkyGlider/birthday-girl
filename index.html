@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Happy Birthday Countdown</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        text-align: center;
+        background: #ffe6f0;
+        font-family: "Brush Script MT", sans-serif;
+      }
+      h1 {
+        font-size: 3rem;
+        color: #ff3399;
+      }
+      #countdown {
+        font-size: 2rem;
+        margin: 20px;
+      }
+      .slideshow {
+        display: none;
+        margin: 20px auto;
+        max-width: 80vw;
+        border: 10px double #ff99cc;
+        border-radius: 30px;
+        padding: 10px;
+        background: white;
+        position: relative;
+      }
+      .slideshow img {
+        width: 100%;
+        border-radius: 20px;
+      }
+      .message {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: #ff3399;
+        font-size: 1.6rem;
+        max-width: 80%;
+        background-color: rgba(255, 255, 255, 0.8);
+        padding: 20px;
+        border-radius: 20px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+      canvas#confetti {
+        position: fixed;
+        top: 0;
+        left: 0;
+        pointer-events: none;
+        z-index: 9999;
+      }
+      #startButton {
+        display: none;
+        padding: 15px 30px;
+        font-size: 2rem;
+        background-color: #ff66b2;
+        color: white;
+        border: none;
+        border-radius: 20px;
+        cursor: pointer;
+        margin-top: 20px;
+        font-family: "Brush Script MT", sans-serif;
+      }
+      #startButton:hover {
+        background-color: #ff3399;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Countdown to Wei Ling's Special Day ❤️</h1>
+    <div id="countdown"></div>
+    <button id="startButton" onclick="showSlideshow()">
+      Start the Celebration 🎉
+    </button>
+
+    <div class="slideshow" id="slideshow">
+      <img id="slideImg" src="pic1.jpg" alt="Slideshow" />
+      <div class="message" id="heartfeltText">
+        <p>Happy Birthday, my lovely Ling Ling❤️</p>
+        <p>
+          From the moment you stepped into my life, you've brought change in
+          ways I never imagined. Your laughter, your voices and your little
+          squeaks have became my favorite sounds, and i find myself missing them
+          dearly whenever you're not around. I crave to see your smile every
+          night, eagerly waiting in the car as you walk out your home to greet
+          me. Your heart is now my favorite home and I shall be here to stay
+          till the end of time. :P
+        </p>
+        <p>
+          Through ups and downs, you've been my pillar of strength, my dearest
+          cheerleader, my number one supporter and a shoulder to vent my
+          sorrows. I wish to continue bringing you even more happiness, love,
+          and the dreams you've been waiting for in the years to come. Because
+          you deserve it all and more.
+        </p>
+        <p>
+          Thank you for being yourself, Wei Ling. I love you more than words can
+          ever say. Happy 26th Birthday, Love!
+        </p>
+        <p>-Your babe, Andrew</p>
+      </div>
+    </div>
+
+    <audio id="birthdaySong" loop>
+      <source src="happy-birthday.mp3" type="audio/mpeg" />
+      Your browser does not support the audio element.
+    </audio>
+
+    <canvas id="confetti"></canvas>
+
+    <script>
+      const countdownEl = document.getElementById("countdown");
+      const slideshowEl = document.getElementById("slideshow");
+      const slideImg = document.getElementById("slideImg");
+      const birthdaySong = document.getElementById("birthdaySong");
+      const startButton = document.getElementById("startButton");
+
+      const images = [
+        "pic1.jpg",
+        "pic2.jpg",
+        "pic3.jpg",
+        "pic4.jpg",
+        "pic5.jpg",
+        "pic6.jpg",
+        "pic7.jpg",
+      ];
+      let slideIndex = 0;
+      const targetDate = new Date("2025-07-09T20:54:00").getTime();
+
+      const timer = setInterval(() => {
+        const now = new Date().getTime();
+        const distance = targetDate - now;
+
+        if (distance <= 0) {
+          clearInterval(timer);
+          countdownEl.style.display = "none";
+          startButton.style.display = "inline-block";
+          return;
+        }
+
+        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        const hours = Math.floor(
+          (distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+        );
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        countdownEl.innerHTML = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+      }, 1000);
+
+      function showSlideshow() {
+        startButton.style.display = "none";
+        slideshowEl.style.display = "block";
+        birthdaySong.play();
+        launchConfetti();
+        setInterval(() => {
+          slideIndex = (slideIndex + 1) % images.length;
+          slideImg.src = images[slideIndex];
+        }, 3000);
+      }
+
+      // Confetti effect using canvas
+      function launchConfetti() {
+        const canvas = document.getElementById("confetti");
+        const ctx = canvas.getContext("2d");
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const confetti = [];
+        for (let i = 0; i < 300; i++) {
+          confetti.push({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height - canvas.height,
+            r: Math.random() * 6 + 4,
+            d: Math.random() * 10 + 5,
+            color: `hsl(${Math.random() * 360}, 100%, 70%)`,
+            tilt: Math.random() * 10 - 5,
+            tiltAngleIncremental: Math.random() * 0.1 + 0.05,
+            tiltAngle: 0,
+          });
+        }
+
+        function draw() {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          confetti.forEach((c) => {
+            ctx.beginPath();
+            ctx.lineWidth = c.r / 2;
+            ctx.strokeStyle = c.color;
+            ctx.moveTo(c.x + c.tilt + c.r / 4, c.y);
+            ctx.lineTo(c.x + c.tilt, c.y + c.tilt + c.r / 4);
+            ctx.stroke();
+          });
+          update();
+          requestAnimationFrame(draw);
+        }
+
+        function update() {
+          confetti.forEach((c) => {
+            c.tiltAngle += c.tiltAngleIncremental;
+            c.y += (Math.cos(c.d) + 3 + c.r / 2) / 2;
+            c.tilt = Math.sin(c.tiltAngle - c.d / 3) * 15;
+
+            if (c.y > canvas.height) {
+              c.y = -10;
+              c.x = Math.random() * canvas.width;
+            }
+          });
+        }
+
+        draw();
+      }
+    </script>
+  </body>
+</html>
